@@ -1,0 +1,2 @@
+C:/Users/Marcbemen3/github-classroom/Bemen3M07/samarretes-carlos-y-marc/android/app/.cxx/RelWithDebInfo/5s1w1645/x86/CMakeFiles/edit_cache.dir
+C:/Users/Marcbemen3/github-classroom/Bemen3M07/samarretes-carlos-y-marc/android/app/.cxx/RelWithDebInfo/5s1w1645/x86/CMakeFiles/rebuild_cache.dir
