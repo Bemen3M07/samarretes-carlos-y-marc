@@ -9,13 +9,9 @@ class TShirtCalculatorScreen extends StatefulWidget {
 }
 
 class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
-  static const double smallPrice = TShirtCalculatorLogic.small;
-  static const double mediumPrice = TShirtCalculatorLogic.medium;
-  static const double largePrice = TShirtCalculatorLogic.large;
-
   int? _numTShirts;
   String? _size;
-  String? _offer;
+  String _offer = ''; // Opción por defecto
   double _price = 0.0;
 
   void _calculatePrice() {
@@ -24,69 +20,57 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
       return;
     }
     setState(() {
-      _price = (_offer == null)
-          ? TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, '')
-          : TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, _offer!);
+      _price = TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, _offer);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const SizedBox(height: 20),
-          MyTextInput(
-            labelText: 'Samarretes',
-            hintText: 'Número de samarretes',
-            keyboardType: TextInputType.number,
-            onChanged: (value) {
-              setState(() {
-                _numTShirts = int.tryParse(value);
-                _calculatePrice();
-              });
-            },
-          ),
-          const Text('Talla'),
-          _buildRadioOption('Petita', 'small', smallPrice),
-          _buildRadioOption('Mitjana', 'medium', mediumPrice),
-          _buildRadioOption('Gran', 'large', largePrice),
-          const SizedBox(height: 20),
-          const Text('Oferta'),
-          DropdownButton<String>(
-            value: _offer,
-            items: [
-              DropdownMenuItem(value: '', child: const Text('Sense descompte')),
-              DropdownMenuItem(value: '10%', child: const Text('Descompte del 10%')),
-              DropdownMenuItem(value: '20€', child: const Text('Descompte per quantitat')),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _offer = value;
-                _calculatePrice();
-              });
-            },
-            hint: const Text('Selecciona una oferta'),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Text(
-                'Preu: \$_price €',
-                style: const TextStyle(fontSize: 32),
-              ),
-            ],
-          ),
-        ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('Calculadora de Samarretes')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 20),
+            _buildTextInput(),
+            const SizedBox(height: 20),
+            const Text('Talla', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            _buildRadioOption('Petita', 'small'),
+            _buildRadioOption('Mitjana', 'medium'),
+            _buildRadioOption('Gran', 'large'),
+            const SizedBox(height: 20),
+            const Text('Oferta', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            _buildDropdown(),
+            const SizedBox(height: 20),
+            _buildPriceDisplay(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildRadioOption(String text, String value, double price) {
+  Widget _buildTextInput() {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: 'Número de samarretes',
+        hintText: 'Introdueix el número de samarretes',
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      keyboardType: TextInputType.number,
+      onChanged: (value) {
+        setState(() {
+          _numTShirts = int.tryParse(value);
+          _calculatePrice();
+        });
+      },
+    );
+  }
+
+  Widget _buildRadioOption(String text, String value) {
     return RadioListTile(
-      title: Text('$text (\$price €)'),
+      title: Text(text),
       value: value,
       groupValue: _size,
       onChanged: (val) {
@@ -97,35 +81,28 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
       },
     );
   }
-}
 
-class MyTextInput extends StatelessWidget {
-  final String labelText;
-  final String hintText;
-  final TextInputType keyboardType;
-  final Function(String) onChanged;
+  Widget _buildDropdown() {
+    return DropdownButton<String>(
+      value: _offer,
+      items: const [
+        DropdownMenuItem(value: '', child: Text('Sense descompte')),
+        DropdownMenuItem(value: '10%', child: Text('Descompte del 10%')),
+        DropdownMenuItem(value: '20€', child: Text('Descompte per quantitat')),
+      ],
+      onChanged: (value) {
+        setState(() {
+          _offer = value!;
+          _calculatePrice();
+        });
+      },
+    );
+  }
 
-  const MyTextInput({
-    super.key,
-    required this.labelText,
-    required this.hintText,
-    required this.keyboardType,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: labelText,
-        hintText: hintText,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      keyboardType: keyboardType,
-      onChanged: onChanged,
+  Widget _buildPriceDisplay() {
+    return Text(
+      _price > 0 ? 'Preu: $_price €' : '',
+      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
     );
   }
 }
-
-
-//ssass
