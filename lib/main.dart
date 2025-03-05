@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
+import 'TShirtCalculatorScreen.dart';  // Importa la pantalla de la calculadora de camisetas
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Calculadora de Camisetas',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const TShirtCalculatorScreen(),  // Define la pantalla principal
     );
   }
 }
+  
