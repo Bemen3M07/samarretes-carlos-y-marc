@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';  // Asegúrate de que esta línea esté incluida
-import 'mainsamarretes.dart';  // Asegúrate de que esta sea la ruta correcta a tu aplicación
+import '../lib/mainsamarretes.dart';  // Asegúrate de que esta sea la ruta correcta a tu aplicación
 
 void main() {
   testWidgets('Cálculo de precio de samarretes', (WidgetTester tester) async {
