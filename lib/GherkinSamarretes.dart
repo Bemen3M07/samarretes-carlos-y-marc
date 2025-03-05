@@ -1,49 +1,57 @@
-import 'package:cucumber/cucumber.dart';
-import 't_shirt_calculator_logic.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_driver/flutter_driver.dart';
+import 'package:test/test.dart';
 
-class StepDefinitions {
-  // Variables necesarias para las pruebas
-  int numeroCamisetas = 0;
-  String talla = '';
-  String oferta = '';
-  double precioTotal = 0.0;
-
-  // Step de Gherkin - "Given el usuario introduce 'X' como número de camisetas"
-  @Given(r'el usuario introduce "([^"]*)" como número de camisetas')
-  void givenNumeroCamisetas(String numero) {
-    numeroCamisetas = int.parse(numero);
-  }
-
-  // Step de Gherkin - "Given selecciona 'X' como talla"
-  @Given(r'selecciona "([^"]*)" como talla')
-  void givenSeleccionaTalla(String tallaSeleccionada) {
-    talla = tallaSeleccionada;
-  }
-
-  // Step de Gherkin - "Given selecciona 'X' como oferta"
-  @Given(r'selecciona "([^"]*)" como oferta')
-  void givenSeleccionaOferta(String ofertaSeleccionada) {
-    oferta = ofertaSeleccionada;
-  }
-
-  // Step de Gherkin - "When el sistema calcula el precio"
-  @When(r'el sistema calcula el precio')
-  void whenCalculaPrecio() {
-    precioTotal = TShirtCalculatorLogic.preuDefinitiu(numeroCamisetas, talla, oferta);
-  }
-
-  // Step de Gherkin - "Then el precio total debe ser 'X'"
-  @Then(r'el precio total debe ser "([^"]*)"')
-  void thenElPrecioTotal(String precioEsperado) {
-    double precio = double.parse(precioEsperado.replaceAll(' €', '').replaceAll(',', '.'));
-    assert(precioTotal == precio);
-  }
-}
 void main() {
-  final stepDefinitions = StepDefinitions();
+  group('Calculadora de Samarretes', () {
+    FlutterDriver? driver;
 
-  group('Pruebas Funcionales de la Calculadora de Samarretes', () {
-    // Ejecutamos las pruebas usando Cucumber
-    Cucumber.run([stepDefinitions]);
+    setUpAll(() async {
+      driver = await FlutterDriver.connect();
+    });
+
+    tearDownAll(() async {
+      if (driver != null) {
+        await driver!.close();  // Asegúrate de usar '!' para acceder al valor
+      }
+    });
+
+    test('Calcular precio de 2 camisetas pequeñas sin descuento', () async {
+      // Introduce el número de camisetas
+      await driver!.tap(find.byValueKey('num_t_shirts_input'));
+      await driver!.enterText('2');
+      
+      // Selecciona la talla pequeña
+      await driver!.tap(find.byValueKey('small_radio_button'));
+
+      // Selecciona "Sin descuento"
+      await driver!.tap(find.byValueKey('no_discount_dropdown'));
+
+      // Comprueba el precio final
+      await driver!.waitFor(find.byValueKey('price_display'));
+      String priceText = await driver!.getText(find.byValueKey('price_display'));
+      
+      // Verifica que el precio calculado es correcto
+      expect(priceText, 'Preu: 23.70 €');
+    });
+
+    test('Calcular precio con descuento del 10%', () async {
+      // Introduce el número de camisetas
+      await driver!.tap(find.byValueKey('num_t_shirts_input'));
+      await driver!.enterText('3');
+      
+      // Selecciona la talla mediana
+      await driver!.tap(find.byValueKey('medium_radio_button'));
+
+      // Selecciona el descuento del 10%
+      await driver!.tap(find.byValueKey('discount_10_dropdown'));
+
+      // Comprueba el precio final
+      await driver!.waitFor(find.byValueKey('price_display'));
+      String priceText = await driver!.getText(find.byValueKey('price_display'));
+      
+      // Verifica que el precio calculado es correcto con descuento
+      expect(priceText, 'Preu: 33.16 €');
+    });
   });
 }
