@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 't_shirt_calculator_logic.dart'; // Importación de la lógica de cálculo
+import 't_shirt_calculator_logic.dart';
 
 class TShirtCalculatorScreen extends StatefulWidget {
   const TShirtCalculatorScreen({super.key});
@@ -15,7 +15,7 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
 
   int? _numTShirts;
   String? _size;
-  String _offer = ''; // Inicializado para evitar errores
+  String? _offer;
   double _price = 0.0;
 
   void _calculatePrice() {
@@ -24,33 +24,10 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
       return;
     }
     setState(() {
-      _price = (_offer.isEmpty)
-          ? TShirtCalculatorLogic.calculatePrice(_size!, _numTShirts!)
-          : TShirtCalculatorLogic.calculatePriceWithDiscount(_size!, _numTShirts!, _offer);
-
-      // Mostrar alerta si la oferta es '20€' y la cantidad es mayor a 10
-      if (_offer == '20€' && (_numTShirts ?? 0) > 10) {
-        _showDiscountAlert();
-      }
+      _price = (_offer == null)
+          ? TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, '')
+          : TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, _offer!);
     });
-  }
-
-  void _showDiscountAlert() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Descompte aplicat'),
-          content: const Text('Has aplicat el descompte per quantitat!'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('D’acord'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -79,15 +56,15 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
           const SizedBox(height: 20),
           const Text('Oferta'),
           DropdownButton<String>(
-            value: _offer.isNotEmpty ? _offer : null,
-            items: const [
-              DropdownMenuItem(value: '', child: Text('Sense descompte')),
-              DropdownMenuItem(value: '10%', child: Text('Descompte del 10%')),
-              DropdownMenuItem(value: '20€', child: Text('Descompte per quantitat')),
+            value: _offer,
+            items: [
+              DropdownMenuItem(value: '', child: const Text('Sense descompte')),
+              DropdownMenuItem(value: '10%', child: const Text('Descompte del 10%')),
+              DropdownMenuItem(value: '20€', child: const Text('Descompte per quantitat')),
             ],
             onChanged: (value) {
               setState(() {
-                _offer = value ?? '';
+                _offer = value;
                 _calculatePrice();
               });
             },
@@ -97,7 +74,7 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
           Row(
             children: [
               Text(
-                'Preu: ${_price.toStringAsFixed(2)} €',
+                'Preu: \$_price €',
                 style: const TextStyle(fontSize: 32),
               ),
             ],
@@ -109,7 +86,7 @@ class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
 
   Widget _buildRadioOption(String text, String value, double price) {
     return RadioListTile(
-      title: Text('$text (${price.toStringAsFixed(2)} €)'),
+      title: Text('$text (\$price €)'),
       value: value,
       groupValue: _size,
       onChanged: (val) {
