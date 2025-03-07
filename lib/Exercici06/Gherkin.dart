@@ -43,5 +43,5 @@ void main() {
     expect(await driver.getText(find.byValueKey('music_playing_message')), 'Música sonando'); // Verifica que el mensaje mostrado sea "Música sonando"
   });
 
-  // Aquí se pueden agregar más pruebas para otros escenarios (como la reproducción de videos o el uso de la cámara trasera)
+  // Aquí se puedens agregar más pruebas para otros escenarios (como la reproducción de videos o el uso de la cámara trasera)
 }
