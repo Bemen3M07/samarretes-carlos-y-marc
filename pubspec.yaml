@@ -10,25 +10,32 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.17
-  camera: ^0.10.5+9
+  camera: ^0.11.1
   video_player: ^2.8.2
   just_audio: ^0.9.36
   flutter_sound: ^9.1.6
   video_player_android: ^2.7.16
   image_picker: ^1.0.4
   audioplayers: ^6.2.0
-  file_picker: ^8.0.0
+  file_picker: ^9.0.2
+  flutter_gherkin: ^2.0.0
+  test: ^1.25.15
+  build_runner: ^2.4.15
+  glob: ^2.1.3
+  gherkin: ^2.0.8
 
 dev_dependencies:
-  flutter_driver:
-    sdk: flutter
+  flutter_gherkin: ^2.0.0
+  gherkin: ^2.0.0
+  glob: ^2.1.2
   flutter_test:
     sdk: flutter
   integration_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
-  test: ^1.16.0
-  youtube_player_flutter: ^8.1.2
+  test: ^1.25.15
+
+
+
 
 
 flutter:
