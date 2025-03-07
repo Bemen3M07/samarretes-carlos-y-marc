@@ -23,3 +23,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/main313.png
+    - assets/tapestry.png
+    - assets/dice_1.svg
+    - assets/dice_2.svg
+    - assets/dice_3.svg
+    - assets/dice_4.svg
+    - assets/dice_5.svg
+    - assets/dice_6.svg
+    - assets/videoPrueba.mp4
+    - assets/audioPrueba1.mp3
+    - assets/audioPrueba2.mp3
+    - assets/audioPrueba3.mp3
