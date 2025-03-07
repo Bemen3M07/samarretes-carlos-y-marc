@@ -188,7 +188,7 @@ class TShirtCalculatorLogic {
         price = numTShirts * large;
         break;
       default:
-        throw Exception('Talla no válida');
+        throw Exception('Talla no valida');
     }
     return price;
   }
