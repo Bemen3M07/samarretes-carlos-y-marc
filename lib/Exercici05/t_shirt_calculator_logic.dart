@@ -1,46 +1,206 @@
+import 'package:flutter/material.dart';
+import 'package:samarretes/Exercici05/t_shirt_calculator_logic.dart';
+
+class TShirtCalculatorScreen extends StatefulWidget {
+  const TShirtCalculatorScreen({super.key});
+
+  @override
+  _TShirtCalculatorScreenState createState() => _TShirtCalculatorScreenState();
+}
+
+class _TShirtCalculatorScreenState extends State<TShirtCalculatorScreen> {
+  static const double smallPrice = TShirtCalculatorLogic.small;
+  static const double mediumPrice = TShirtCalculatorLogic.medium;
+  static const double largePrice = TShirtCalculatorLogic.large;
+
+  int? _numTShirts;
+  String? _size;
+  String? _offer;
+  double _price = 0.0;
+
+  void _calculatePrice() {
+    if (_numTShirts == null || _size == null) {
+      setState(() {
+        _price = 0.0;
+      });
+      return;
+    }
+
+    if (_offer == null) {
+      setState(() {
+        _price = TShirtCalculatorLogic.calculaPreuSamarretes(_numTShirts!, _size!);
+
+
+      });
+    } else {
+      setState(() {
+        _price = TShirtCalculatorLogic.preuDefinitiu(_numTShirts!, _size!, _offer!);
+
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          const SizedBox(height: 20),
+          MyTextInput(
+            labelText: 'Samarretes',
+            hintText: 'Número de samarretes',
+            keyboardType: TextInputType.number,
+            onChanged: (value) {
+              setState(() {
+                _numTShirts = int.tryParse(value);
+                _calculatePrice();
+              });
+            },
+          ),
+          const Text('Talla'),
+          RadioListTile(
+            title: Text('Petita ($smallPrice €)'),
+            value: 'small',
+            groupValue: _size,
+            onChanged: (value) {
+              setState(() {
+                _size = value;
+                _calculatePrice();
+              });
+            },
+          ),
+          RadioListTile(
+            title: Text('Mitjana ($mediumPrice €)'),
+            value: 'medium',
+            groupValue: _size,
+            onChanged: (value) {
+              setState(() {
+                _size = value;
+                _calculatePrice();
+              });
+            },
+          ),
+          RadioListTile(
+            title: Text('Gran ($largePrice €)'),
+            value: 'large',
+            groupValue: _size,
+            onChanged: (value) {
+              setState(() {
+                _size = value;
+                _calculatePrice();
+              });
+            },
+          ),
+          const SizedBox(height: 20),
+          const Text('Oferta'),
+          DropdownButton<String>(
+            value: _offer,
+            items: const [
+              DropdownMenuItem(
+                value: null,
+                child: Text('Sense desompte'),
+              ),
+              DropdownMenuItem(
+                value: '10%',
+                child: Text('Descompte del 10%'),
+              ),
+              DropdownMenuItem(
+                value: '20€',
+                child: Text('Descompte per quantitat'),
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                _offer = value;
+                _calculatePrice();
+              });
+            },
+            hint: const Text('Selecciona una oferta'),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Text(
+                'Preu: $_price €',
+                style: const TextStyle(fontSize: 32),
+              ),
+//TODO Aquí iría otro children con el texto de alerta en casode que descuento por cantidad
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MyTextInput extends StatelessWidget {
+  final String labelText;
+  final String hintText;
+  final TextInputType keyboardType;
+  final Function(String) onChanged;
+
+  const MyTextInput({
+    super.key,
+    required this.labelText,
+    required this.hintText,
+    required this.keyboardType,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200, // Set the desired width
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey), // Add border
+        borderRadius: BorderRadius.circular(8), // Optional: Add border radius
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintText: hintText,
+          border: InputBorder.none, // Remove default border
+          contentPadding: EdgeInsets.all(8), // Add padding inside the border
+        ),
+        keyboardType: keyboardType,
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
 class TShirtCalculatorLogic {
-  // Precios por talla: Se definen las constantes de precios para cada talla.
-  static const double small = 11.85;
-  static const double medium = 12.45;
-  static const double large = 19.05;
+  static const double small = 7.9;
+  static const double medium = 8.3;
+  static const double large = 12.7;
 
-  // Calcula el precio sin descuento, multiplicando el número de camisetas por el precio de la talla seleccionada.
-  static double calculaPreuSamarretes(int numero, String talla) {
-    double pricePerShirt = 0.0; // Variable para almacenar el precio por camiseta según la talla
-    switch (talla) { // Se determina el precio según la talla seleccionada
-      case 'small': // Si la talla es "small"
-        pricePerShirt = small; // Asigna el precio para la talla pequeña
+  static double calculaPreuSamarretes(int numTShirts, String size) {
+    double price;
+    switch (size) {
+      case 'small':
+        price = numTShirts * small;
         break;
-      case 'medium': // Si la talla es "medium"
-        pricePerShirt = medium; // Asigna el precio para la talla mediana
+      case 'medium':
+        price = numTShirts * medium;
         break;
-      case 'large': // Si la talla es "large"
-        pricePerShirt = large; // Asigna el precio para la talla grande
+      case 'large':
+        price = numTShirts * large;
         break;
-      default: // Si la talla no es válida
-        throw Exception('Talla no vàlida'); // Lanza una excepción con un mensaje de error
+      default:
+        throw Exception('Talla no válida');
     }
-    // Calcula el precio total sin descuento multiplicando el precio por el número de camisetas, redondeado a 2 decimales
-    return double.parse((pricePerShirt * numero).toStringAsFixed(2));
+    return price;
   }
 
-  // Calcula el descuento aplicable según el tipo de descuento, redondeando a 2 decimales
-  static double calculaDescompte(double preu, String tipusDescompte) {
-    double descompte = 0.0; // Variable para almacenar el valor del descuento
-    if (tipusDescompte == '10%') { // Si el tipo de descuento es "10%"
-      descompte = preu * 0.10; // Calcula el descuento del 10% sobre el precio
-    } else if (tipusDescompte == '20€' && preu > 100) { // Si el tipo de descuento es "20€" y el precio es mayor a 100
-      descompte = 20.0; // Aplica un descuento fijo de 20€
-    }
-    // Retorna el descuento calculado, redondeado a 2 decimales
-    return double.parse(descompte.toStringAsFixed(2));
-  }
+  static double preuDefinitiu(int numTShirts, String size, String discount) {
+    double price = calculaPreuSamarretes(numTShirts, size);
 
-  // Calcula el precio final después de aplicar el descuento
-  static double preuDefinitiu(int numero, String talla, String descompte) {
-    double preu = calculaPreuSamarretes(numero, talla); // Llama a la función para calcular el precio sin descuento
-    double descompteAplicado = calculaDescompte(preu, descompte); // Calcula el descuento aplicado
-    // Calcula el precio final restando el descuento al precio original, redondeado a 2 decimales
-    return double.parse((preu - descompteAplicado).toStringAsFixed(2));
+    if (discount == '10%') {
+      price *= 0.9; // 10% de descuento
+    } else if (discount == '20€' && price > 100) {
+      price -= 20; // Descuento de 20€ si el total supera los 100€
+    }
+    return price;
   }
 }
