@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import '../lib/Exercici05/mainsamarretes.dart';  // Importa la app que deseas probar
+import '../../lib/Exercici05/t_shirt_calculator_logic.dart';  // Importa la app que deseas probar
 
 void main() {
   testWidgets('Cálculo de precio de samarretes', (WidgetTester tester) async {
